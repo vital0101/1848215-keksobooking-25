@@ -64,6 +64,4 @@ const createAdvert = () => {
 const similarAdvert = Array.from({length:SIMILAR_ADVERT_COUNT}, createAdvert);
 
 // eslint-disable-next-line no-console
-// console.log(similarAdvert);
-
-export {similarAdvert};
+console.log(similarAdvert);
