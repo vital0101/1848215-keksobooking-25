@@ -11,51 +11,116 @@ const TYPES_OF_HOUSING = {
 
 const similarAdvertList = document.querySelector('#map-canvas');
 
-const advertTemplate = document.querySelector('#card').content;
-
-const advertCard = advertTemplate.querySelector('.popup');
-
-const featuresContainer = advertCard.querySelector('.popup__features');
-
-const featuresList = featuresContainer.querySelectorAll('.popup__feature');
+const advertCard = document.querySelector('#card').content.querySelector('.popup');
 
 const similarAdverts = createAdverts(1);
 
+const innerSimpleText = (parent, cssClass, data) => {
+  const  element = parent.querySelector(cssClass);
+  if(!data) {
+    element.remove();
+    return;
+  }
+  element.textContent = data;
+};
 
-similarAdverts.forEach((advert) => {
-  const advertElement = advertCard.cloneNode(true);
+const innerSimpleSrc = (parent, cssClass, data) => {
+  const  element = parent.querySelector(cssClass);
+  if(!data) {
+    element.remove();
+    return;
+  }
+  element.src = data;
+};
 
-  advertElement.querySelector('.popup__avatar').src = advert.author.avatar;
+const innerPriceContent = (parent, cssClass, data) => {
+  const  element = parent.querySelector(cssClass);
+  if(!data) {
+    element.remove();
+    return;
+  }
+  element.textContent = `${data} ₽/ночь`;
+};
 
-  advertElement.querySelector('.popup__title').textContent = advert.offer.title;
+const innerTimeContent = (parent, cssClass, dataIn, dataOut) => {
+  const  element = parent.querySelector(cssClass);
 
-  advertElement.querySelector('.popup__text--address').textContent = `${advert.location.lat} ${advert.location.lng}`;
+  if(!dataIn && !dataOut) {
+    element.remove();
+    return;
+  }
 
-  advertElement.querySelector('.popup__text--price').textContent = `${advert.offer.price} ₽/ночь`;
+  const inText = dataIn ? `Заезд после ${dataIn}` : '';
+  const outText = dataOut ? `выезд до ${dataOut}` : '';
+  const divider = dataIn && dataOut ? ', ' : '';
 
-  advertElement.querySelector('.popup__text--time').textContent = `Заезд после ${advert.offer.checkin} , выезд до ${advert.offer.checkout}`;
+  element.textContent = `${inText}${divider}${outText}`;
+};
 
-  advertElement.querySelector('.popup__text--capacity').textContent = `${advert.offer.rooms} комнаты для ${advert.offer.guests} гостей`;
+const innerRoomContent = (parent, cssClass, room, guest) => {
+  const  element = parent.querySelector(cssClass);
 
-  advertElement.querySelector('.popup__type').textContent = TYPES_OF_HOUSING[advert.offer.type];
+  if(!room && !guest) {
+    element.remove();
+    return;
+  }
 
-  advertElement.querySelector('.popup__photo').src = advert.offer.photos;
+  const rooms = room ? `${room} комнаты для` : '';
+  const guests = guest ? `${guest} гостей` : '';
+  const divider = room && guest ? ' ' : '';
 
-  advertElement.querySelector('.popup__description').textContent = advert.offer.description;
+  element.textContent = `${rooms}${divider}${guests}`;
+};
 
-  // должно перебирать массив и удалять те элементы, класс которых не обнаружен
-  // не работает
-  featuresList.forEach((featureListItem) => {
-    const renderFeatures = advert.offer.features;
+const innerPhotoContent = (parent, cssClassParent, cssClassChild, data) => {
+  const parentElement = parent.querySelector(cssClassParent);
+  const  element = parent.querySelector(cssClassChild);
+  if(data.length === 0) {
+    element.remove();
+    return;
+  }
+  if (data.length === 1) {
+    element.src = data[0];
+    return;
+  }
 
-    const isNecessary = renderFeatures.some(
-      (featureElement) => featureListItem.classList.contains(`popup__feature--${featureElement}`),
+  if (data.length > 1) {
+    data.forEach((value) => {
+      const newImg = element.cloneNode(true);
+      element.remove();
+      newImg.src = value;
+      parentElement.append(newImg);
+    });
+  }
+};
+
+const innerFeaturesContent = (parent, cssClass, data) => {
+  const  elementList = parent.querySelector(cssClass).children;
+  const arrElementList = Array.from(elementList);
+  arrElementList.forEach((elementItem) => {
+    const isNecessary = data.some(
+      (featureClass) => elementItem.classList.contains(`popup__feature--${featureClass}`)
     );
-
     if (!isNecessary) {
-      featureListItem.remove();
+      elementItem.remove();
     }
   });
+};
+
+similarAdverts.forEach(({offer, author}) => {
+  const advertElement = advertCard.cloneNode(true);
+
+  innerSimpleSrc(advertElement, '.popup__avatar', author.avatar);
+  innerSimpleText(advertElement, '.popup__title', offer.title);
+  innerSimpleText(advertElement, '.popup__title', offer.title);
+  innerSimpleText(advertElement, '.popup__text--address', offer.address);
+  innerSimpleText(advertElement, '.popup__type', TYPES_OF_HOUSING[offer.type]);
+  innerSimpleText(advertElement, '.popup__description', offer.description);
+  innerPriceContent(advertElement, '.popup__text--price', offer.price);
+  innerTimeContent(advertElement, '.popup__text--time', offer.checkin, offer.checkout);
+  innerRoomContent(advertElement, '.popup__text--capacity', offer.rooms, offer.guests);
+  innerPhotoContent(advertElement, '.popup__photos', '.popup__photo', offer.photos);
+  innerFeaturesContent (advertElement, '.popup__features', offer.features);
 
 
   similarAdvertList.appendChild(advertElement);
