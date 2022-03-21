@@ -65,8 +65,8 @@ const innerRoomContent = (parent, cssClass, room, guest) => {
     return;
   }
 
-  const rooms = room ? `${room} комнаты для` : '';
-  const guests = guest ? `${guest} гостей` : '';
+  const rooms = room ? `${room} комнаты` : '';
+  const guests = guest ? `для ${guest} гостей` : '';
   const divider = room && guest ? ' ' : '';
 
   element.textContent = `${rooms}${divider}${guests}`;
@@ -75,32 +75,27 @@ const innerRoomContent = (parent, cssClass, room, guest) => {
 const innerPhotoContent = (parent, cssClassParent, cssClassChild, data) => {
   const parentElement = parent.querySelector(cssClassParent);
   const  element = parent.querySelector(cssClassChild);
-  if(data.length === 0) {
-    element.remove();
-    return;
-  }
-  if (data.length === 1) {
-    element.src = data[0];
+  parentElement.innerHTML = '';
+  if(typeof data !== 'object' || !data.length) {
+    parentElement.remove();
     return;
   }
 
-  if (data.length > 1) {
-    data.forEach((value) => {
-      const newImg = element.cloneNode(true);
-      element.remove();
-      newImg.src = value;
-      parentElement.append(newImg);
-    });
-  }
+  data.forEach((value) => {
+    const newImg = element.cloneNode(true);
+    newImg.src = value;
+    parentElement.append(newImg);
+  });
 };
+
 
 const innerFeaturesContent = (parent, cssClass, data) => {
   const  elementList = parent.querySelector(cssClass).children;
-  const arrElementList = Array.from(elementList);
-  arrElementList.forEach((elementItem) => {
+  [...elementList].forEach((elementItem) => {
     const isNecessary = data.some(
       (featureClass) => elementItem.classList.contains(`popup__feature--${featureClass}`)
     );
+
     if (!isNecessary) {
       elementItem.remove();
     }
