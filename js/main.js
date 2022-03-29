@@ -1,2 +1,2 @@
-import './form-advert.js';
+import './form-validate.js';
 import './card-advert.js';

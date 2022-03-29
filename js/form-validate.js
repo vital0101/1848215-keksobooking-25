@@ -59,61 +59,17 @@ const timeIn = formAdvert.querySelector('#timein');
 const timeOut = formAdvert.querySelector('#timeout');
 
 // при выборе значения в одном поле, значение в другом поле должно поменяться
-timeIn.addEventListener('change', () => {
-  if (timeIn.value === '12:00') {
-    timeOut[1].removeAttribute('selected', 'selected');
-    timeOut[2].removeAttribute('selected', 'selected');
-    timeOut[0].setAttribute('selected', 'selected');
-    return;
-  }
-  if (timeIn.value === '13:00') {
-    timeOut[0].removeAttribute('selected', 'selected');
-    timeOut[2].removeAttribute('selected', 'selected');
-    timeOut[1].setAttribute('selected', 'selected');
-    return;
-  }
-  if (timeIn.value === '14:00') {
-    timeOut[0].removeAttribute('selected', 'selected');
-    timeOut[1].removeAttribute('selected', 'selected');
-    timeOut[2].setAttribute('selected', 'selected');
-  }
-});
 
-timeOut.addEventListener('change', () => {
-  if (timeOut.value === '12:00') {
-    timeIn[1].removeAttribute('selected', 'selected');
-    timeIn[2].removeAttribute('selected', 'selected');
-    timeIn[0].setAttribute('selected', 'selected');
-    return;
-  }
-  if (timeOut.value === '13:00') {
-    timeIn[0].removeAttribute('selected', 'selected');
-    timeIn[2].removeAttribute('selected', 'selected');
-    timeIn[1].setAttribute('selected', 'selected');
-    return;
-  }
-  if (timeOut.value === '14:00') {
-    timeIn[0].removeAttribute('selected', 'selected');
-    timeIn[1].removeAttribute('selected', 'selected');
-    timeIn[2].setAttribute('selected', 'selected');
-  }
-});
+const onTimeInChange = () => {
+  timeOut.value = timeIn.value;
+};
 
-const validateTimeInputs = () => timeIn.value === timeOut.value;
-const getErrorTextTimeIn = () => 'Время заезда должно соотвествовать времени выезда';
-const getErrorTextTimeOut = () => 'Время выезда должно соотвествовать времени заезда';
+const onTimeOutChange = () => {
+  timeIn.value = timeOut.value;
+};
 
-pristine.addValidator(
-  timeIn,
-  validateTimeInputs,
-  getErrorTextTimeIn,
-);
-
-pristine.addValidator(
-  timeOut,
-  validateTimeInputs,
-  getErrorTextTimeOut,
-);
+timeIn.addEventListener('change', onTimeInChange);
+timeOut.addEventListener('change', onTimeOutChange);
 
 const roomsInput = formAdvert.querySelector('#room_number');
 const capacityInput = formAdvert.querySelector('#capacity');
