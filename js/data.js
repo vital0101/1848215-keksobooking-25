@@ -98,10 +98,6 @@ const createAdvert = () => {
   };
 };
 
-
 const createAdverts = (count) => Array.from({length:count}, createAdvert);
-
-// eslint-disable-next-line no-console
-
 
 export {createAdverts};

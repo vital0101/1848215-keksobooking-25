@@ -13,7 +13,7 @@ const similarAdvertList = document.querySelector('#map-canvas');
 
 const advertCard = document.querySelector('#card').content.querySelector('.popup');
 
-const similarAdverts = createAdverts(1);
+const similarAdverts = createAdverts(3);
 
 const innerSimpleText = (parent, cssClass, data) => {
   const  element = parent.querySelector(cssClass);
@@ -117,6 +117,7 @@ similarAdverts.forEach(({offer, author}) => {
   innerPhotoContent(advertElement, '.popup__photos', '.popup__photo', offer.photos);
   innerFeaturesContent (advertElement, '.popup__features', offer.features);
 
-
   similarAdvertList.appendChild(advertElement);
 });
+
+export {similarAdverts};
