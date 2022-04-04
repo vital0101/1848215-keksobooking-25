@@ -1,2 +1,6 @@
-import './form-validate.js';
-import './card-advert.js';
+import { deactivateForms } from './page-states.js';
+import { initMap } from './map.js';
+
+deactivateForms();
+initMap();
+
