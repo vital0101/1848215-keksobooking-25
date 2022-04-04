@@ -1,121 +1,94 @@
-import {similarAdverts} from './card-advert.js';
+import { createAdverts } from './data.js';
+import { validateFormAdvert } from './form-validate.js';
+import { slider } from './slider.js';
+import { createCard } from './card-advert.js';
+import { activateAdvertForm, activateMapFilterForm } from './page-states.js';
+import { addPhotoInputsListeners, clearImageBlocks } from './preload-images.js';
 
-// const {lat, lng} = similarAdverts[0].location; //similarAdverts[0].location доступ к элементу массива
-// console.log(similarAdverts);
-// console.log(similarAdverts[0].location);
-// console.log(lat, lng); //получение значения свойства объекта
-
-const formAdvert = document.querySelector('.ad-form');
-const elementFormAdvert = formAdvert.children;
-const formMapFilter = document.querySelector('.map__filters');
-const elementMapFilter = formMapFilter.children;
+const START_LOCATION = {
+  lat: 	35.68172,
+  lng: 139.75392,
+};
+const DECIMALS = 5;
+const ADVERTS_COUNTER = 20;
+const adverts = createAdverts(ADVERTS_COUNTER); //эти данные буду получать с сервера
 const resetButton = document.querySelector('.ad-form__reset');
-const address = document.querySelector('#address');
+const addressInput = document.querySelector('#address');
+const interactiveMap = L.map('map-canvas');
+const markerGroup = L.layerGroup();
+let interactiveMarker;
+let marker;
 
+const setStartAddressValue = () => {
+  addressInput.value = `${START_LOCATION.lat}, ${START_LOCATION.lng}`;
+};
 
-formAdvert.classList.add('.ad-form--disabled');
-[...elementFormAdvert].forEach(
-  (element) => {
-    element.setAttribute('disabled', 'disabled');
-  }
-);
+const setLocatin = (target) => {
+  const location = target.getLatLng();
+  addressInput.value = `${location.lat.toFixed(DECIMALS)}, ${location.lng.toFixed(DECIMALS)}`;
+};
 
-formMapFilter.classList.add('.map__filters--disabled');
-[...elementMapFilter].forEach(
-  (element) => {
-    element.setAttribute('disabled', 'disabled');
-  }
-);
-
-const map = L.map('map-canvas')
-  .on('load', () => {
-    formMapFilter.classList.remove('.map__filters--disabled');
-    formAdvert.classList.remove('.ad-form--disabled');
-    [...elementFormAdvert].forEach(
-      (element) => {
-        element.removeAttribute('disabled', 'disabled');
-      }
+const addMarkerGroup = (data) => {
+  markerGroup.addTo(interactiveMap);
+  data.forEach((offer) => {
+    marker = L.marker(
+      offer.location,
+      {
+        icon: L.icon({
+          iconUrl: './img/pin.svg',
+          iconSize: [40, 40],
+          iconAnchor: [20, 40],
+        }),
+      },
     );
-    [...elementMapFilter].forEach(
-      (element) => {
-        element.removeAttribute('disabled', 'disabled');
-      }
-    );
-  })
-  .setView({
-    lat: 	35.6895,
-    lng: 139.692,
-  }, 15);
-
-L.tileLayer(
-  'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-  {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-  },
-).addTo(map);
-
-// создаем кастомную иконку
-
-const mainPinIcon = L.icon({
-  iconUrl: './img/main-pin.svg',
-  iconSize: [52, 52],
-  iconAnchor: [26, 52],
-});
-
-const mainPinMarker = L.marker(
-  {
-    lat: 	35.6895,
-    lng: 139.692,
-  },
-  {
-    draggable: true,
-    icon: mainPinIcon,
-  },
-);
-
-mainPinMarker.addTo(map);
-
-mainPinMarker.on('moveend', (evt) => {
-  address.value = evt.target.getLatLng();
-});
-
-// при клике на кнопку reset карта и главный маркер возвращаются в начальное положение
-
-resetButton.addEventListener('click', () => {
-  mainPinMarker.setLatLng({
-    lat: 	35.6895,
-    lng: 139.692,
+    marker
+      .addTo(markerGroup)
+      .bindPopup(createCard(offer));
   });
+};
 
-  map.setView({
-    lat: 	35.6895,
-    lng: 139.692,
-  }, 15);
-});
+const onMarkerMove = (evt) => setLocatin(evt.target);
 
-// создаем кастомную иконку
+const onResetButtonClick = () => {
+  setTimeout(() => setStartAddressValue());
+  clearImageBlocks();
+};
 
-const pinIcon = L.icon({
-  iconUrl: './img/pin.svg',
-  iconSize: [40, 40],
-  iconAnchor: [20, 40],
-});
+const activateAddForm = () => {
+  activateAdvertForm();
+  setStartAddressValue();
+  validateFormAdvert();
+  slider();
+  addPhotoInputsListeners();
+  resetButton.addEventListener('click', onResetButtonClick);
+};
 
-// циклом проходим по масиву и на основе данных location создаем метки
-// и добавляем на карту
+export const initMap = () => {
+  interactiveMap.on('load', () => {
+    activateAddForm();
+    activateMapFilterForm();
+    setStartAddressValue();
+    addMarkerGroup(adverts);
+  })
+    .setView(START_LOCATION, 15);
 
-similarAdverts.forEach((location) => {
-  const {lat, lng} = location;
-  const marker = L.marker(
+  L.tileLayer(
+    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
     {
-      lat,
-      lng,
+      foo: 'bar',
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     },
-    {
-      icon: pinIcon,
-    },
-  );
-  marker.addTo(map).bindPopup(similarAdverts);
-});
+  ).addTo(interactiveMap);
 
-// mainPinMarker.remove();
+  interactiveMarker = L.marker(START_LOCATION,
+    {
+      draggable: 'true',
+      icon:  L.icon({
+        iconUrl: './img/main-pin.svg',
+        iconSize: [52, 52],
+        iconAnchor: [26, 52],
+      }),
+    }).addTo(interactiveMap);
+
+  interactiveMarker.on('moveend', onMarkerMove);
+};

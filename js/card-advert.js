@@ -1,5 +1,3 @@
-import { createAdverts } from './data.js';
-
 const TYPES_OF_HOUSING = {
   flat: 'Квартира',
   bungalow: 'Бунгало',
@@ -8,12 +6,9 @@ const TYPES_OF_HOUSING = {
   hotel: 'Отель',
 };
 
-
-const similarAdvertList = document.querySelector('#map-canvas');
-
 const advertCard = document.querySelector('#card').content.querySelector('.popup');
 
-const similarAdverts = createAdverts(3);
+// const similarAdverts = createAdverts(3);
 
 const innerSimpleText = (parent, cssClass, data) => {
   const  element = parent.querySelector(cssClass);
@@ -102,7 +97,7 @@ const innerFeaturesContent = (parent, cssClass, data) => {
   });
 };
 
-similarAdverts.forEach(({offer, author}) => {
+const createCard = (({offer, author}) => {
   const advertElement = advertCard.cloneNode(true);
 
   innerSimpleSrc(advertElement, '.popup__avatar', author.avatar);
@@ -117,7 +112,7 @@ similarAdverts.forEach(({offer, author}) => {
   innerPhotoContent(advertElement, '.popup__photos', '.popup__photo', offer.photos);
   innerFeaturesContent (advertElement, '.popup__features', offer.features);
 
-  similarAdvertList.appendChild(advertElement);
+  return advertElement;
 });
 
-export {similarAdverts};
+export {createCard};
