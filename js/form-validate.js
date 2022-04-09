@@ -1,6 +1,7 @@
 import {sendData} from './api.js';
 
 const formAdvert = document.querySelector('.ad-form');
+const submitButton = document.querySelector('.ad-form__submit');
 
 const pristine = new Pristine(formAdvert, {
   classTo: 'ad-form__element',
@@ -87,6 +88,7 @@ const setAdFormActions = (onSuccess, onError) => {
     evt.preventDefault();
 
     if (pristine.validate()) {
+      submitButton.disabled = true;
       const formData = new FormData(formAdvert);
       sendData(onSuccess, onError, formData);
     }

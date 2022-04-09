@@ -8,12 +8,6 @@ const createErrorTemplate = (text, buttonState) =>  `<div class="error">
                                                       ${buttonState ? '<button type="button" class="error__button">Попробовать снова</button>' : ''}
                                                     </div>`;
 
-
-const removeListeners = () => {
-  document.removeEventListener('click', onErrorClick);
-  document.removeEventListener('keydown', onErrorKeydown);
-};
-
 const onErrorClick = (evt) => {
   evt.preventDefault();
   if (evt.target.closest('.error')) {
@@ -36,7 +30,10 @@ const addListeners = () => {
   document.addEventListener('keydown', onErrorKeydown);
 };
 
-
+function removeListeners() {
+  document.removeEventListener('click', onErrorClick);
+  document.removeEventListener('keydown', onErrorKeydown);
+}
 
 const renderGetErrorMessage = () => {
   renderElement(document.body, createErrorTemplate(GET_ERROR_TEXT, false));
