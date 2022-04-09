@@ -8,8 +8,6 @@ const TYPES_OF_HOUSING = {
 
 const advertCard = document.querySelector('#card').content.querySelector('.popup');
 
-// const similarAdverts = createAdverts(3);
-
 const innerSimpleText = (parent, cssClass, data) => {
   const  element = parent.querySelector(cssClass);
   if(!data) {
@@ -101,7 +99,6 @@ const createCard = (({offer, author}) => {
   const advertElement = advertCard.cloneNode(true);
 
   innerSimpleSrc(advertElement, '.popup__avatar', author.avatar);
-  innerSimpleText(advertElement, '.popup__title', offer.title);
   innerSimpleText(advertElement, '.popup__title', offer.title);
   innerSimpleText(advertElement, '.popup__text--address', offer.address);
   innerSimpleText(advertElement, '.popup__type', TYPES_OF_HOUSING[offer.type]);

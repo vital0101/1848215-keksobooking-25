@@ -1,4 +1,5 @@
 import { createAdverts } from './data.js';
+// import { getData } from './api.js';
 import { validateFormAdvert } from './form-validate.js';
 import { slider } from './slider.js';
 import { createCard } from './card-advert.js';
@@ -11,7 +12,7 @@ const START_LOCATION = {
 };
 const DECIMALS = 5;
 const ADVERTS_COUNTER = 20;
-const adverts = createAdverts(ADVERTS_COUNTER); //эти данные буду получать с сервера
+const adverts = createAdverts(ADVERTS_COUNTER);
 const resetButton = document.querySelector('.ad-form__reset');
 const addressInput = document.querySelector('#address');
 const interactiveMap = L.map('map-canvas');
