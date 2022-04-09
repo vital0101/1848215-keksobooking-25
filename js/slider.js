@@ -1,12 +1,13 @@
-export const slider = () => {
-  const sliderElement = document.querySelector('.ad-form__slider');
-  const valueElement = document.querySelector('#price');
+const sliderElement = document.querySelector('.ad-form__slider');
+const valueElement = document.querySelector('#price');
+
+const initSlider = () => {
   noUiSlider.create(sliderElement, {
     range: {
       min: 0,
       max: 100000,
     },
-    start: 0,
+    start: 5000,
     step: 1000,
     connect: 'lower',
     format: {
@@ -22,11 +23,6 @@ export const slider = () => {
   sliderElement.noUiSlider.on('update', () => {
     valueElement.value = sliderElement.noUiSlider.get();
   });
-
-  // sliderElement.setAttribute('disabled', true);
-
-  // sliderElement.removeAttribute('disabled');
-
-  // sliderElement.noUiSlider.destroy();
 };
 
+export {initSlider};

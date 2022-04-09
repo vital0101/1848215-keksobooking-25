@@ -8,10 +8,9 @@ const TYPES_OF_HOUSING = {
 
 const advertCard = document.querySelector('#card').content.querySelector('.popup');
 
-// const similarAdverts = createAdverts(3);
-
 const innerSimpleText = (parent, cssClass, data) => {
   const  element = parent.querySelector(cssClass);
+
   if(!data) {
     element.remove();
     return;
@@ -85,7 +84,12 @@ const innerPhotoContent = (parent, cssClassParent, cssClassChild, data) => {
 
 
 const innerFeaturesContent = (parent, cssClass, data) => {
-  const  elementList = parent.querySelector(cssClass).children;
+  if(!data) {
+    parent.remove();
+    return;
+  }
+
+  const elementList = parent.querySelector(cssClass).children;
   [...elementList].forEach((elementItem) => {
     const isNecessary = data.some(
       (featureClass) => elementItem.classList.contains(`popup__feature--${featureClass}`)
@@ -99,9 +103,7 @@ const innerFeaturesContent = (parent, cssClass, data) => {
 
 const createCard = (({offer, author}) => {
   const advertElement = advertCard.cloneNode(true);
-
   innerSimpleSrc(advertElement, '.popup__avatar', author.avatar);
-  innerSimpleText(advertElement, '.popup__title', offer.title);
   innerSimpleText(advertElement, '.popup__title', offer.title);
   innerSimpleText(advertElement, '.popup__text--address', offer.address);
   innerSimpleText(advertElement, '.popup__type', TYPES_OF_HOUSING[offer.type]);
@@ -111,7 +113,6 @@ const createCard = (({offer, author}) => {
   innerRoomContent(advertElement, '.popup__text--capacity', offer.rooms, offer.guests);
   innerPhotoContent(advertElement, '.popup__photos', '.popup__photo', offer.photos);
   innerFeaturesContent (advertElement, '.popup__features', offer.features);
-
   return advertElement;
 });
 

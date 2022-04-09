@@ -3,4 +3,3 @@ import { initMap } from './map.js';
 
 deactivateForms();
 initMap();
-
