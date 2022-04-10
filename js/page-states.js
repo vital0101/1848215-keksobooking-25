@@ -13,17 +13,19 @@ const deactivateMapFilterForm = () => {
   mapFilterInteractiveElements.forEach((element) => element.setAttribute('disabled', 'disabled'));
 };
 
-export const deactivateForms = () => {
+const deactivateForms = () => {
   deactivateAdvertForm();
   deactivateMapFilterForm();
 };
 
-export const activateAdvertForm = () => {
+const activateAdvertForm = () => {
   advertForm.classList.remove('ad-form--disabled');
   advertFormtInteractiveElements.forEach((element) => element.removeAttribute('disabled', 'disabled'));
 };
 
-export const activateMapFilterForm = () => {
+const activateMapFilterForm = () => {
   mapFilterForm.classList.remove('map__filters--disabled');
   mapFilterInteractiveElements.forEach((element) => element.removeAttribute('disabled', 'disabled'));
 };
+
+export {deactivateForms, activateAdvertForm, activateMapFilterForm};
